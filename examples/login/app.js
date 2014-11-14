@@ -1,4 +1,10 @@
 var express = require('express')
+  , morgan = require('morgan')
+  , cookieParser = require('cookie-parser')
+  , bodyParser = require('body-parser')
+  , methodOverride = require('method-override')
+  , session = require('express-session')
+  , expressLayouts = require('express-ejs-layouts')
   , http = require('http')
   , passport = require('passport')
   , util = require('util')
@@ -10,16 +16,16 @@ var app = express();
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
-app.use(express.logger());
-app.use(express.cookieParser());
-app.use(express.bodyParser());
-app.use(express.methodOverride());
-app.use(express.session({ secret: 'keyboard cat' }));
+app.use(morgan('combined'));
+app.use(cookieParser());
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(methodOverride());
+app.use(session({ secret: 'keyboard cat' }));
+app.use(expressLayouts);
 // Initialize Passport!  Also use passport.session() middleware, to support
 // persistent login sessions (recommended).
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(app.router);
 app.use(express.static(__dirname + '/public'));
 
 var XING_API_KEY = "--insert-xing-api-key-here--"
